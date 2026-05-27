@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 /* Types */
 typedef int BOOL;
@@ -35,3 +34,4 @@ int sizeofbyte(int howmanybytes);
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define CLAMP(x, lo, hi) (MIN(MAX((x), (lo)), (hi)))
 #define balloc_array(type, count) ((type *)balloc((count) * sizeof(type)))
+

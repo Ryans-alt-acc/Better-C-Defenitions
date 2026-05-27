@@ -1,4 +1,5 @@
 #include "BCD.h"
+#include <string.h>
 #include <time.h>
 
 /* ================= RNG ================= */
