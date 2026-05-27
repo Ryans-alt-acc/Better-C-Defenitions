@@ -53,7 +53,7 @@ void *brealloc(void *ptr, size_t size) {
         fprintf(stderr, "brealloc: out of memory\n");
         exit(EXIT_FAILURE);
     }
-    arena_track(ptr);
+    arena_track(new_ptr); //fixed ptr issue
     return new_ptr;
 }
 

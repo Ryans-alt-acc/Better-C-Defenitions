@@ -20,7 +20,7 @@ int random_int(int min, int max); //returns a random intiger
 void *balloc(size_t size); //Malloc but with automatic memory safeguards and arena tracking, Balloc(size_t size);
 void *bcalloc(size_t count, size_t size);//calloc but with automatic memory safeguards and arena tracking, bcalloc(size_t size);
 void *brealloc(void *ptr, size_t size);//realloc but with automatic memory safeguards and arrena tracling brealloc(void *ptr, size_t size);
-void bfree(void *ptr);//basicly the free function, but iff you pass null to it it frees all the tracked pointers
+void bfree(void *ptr);//URGENT: do NOT pass NULL accidently. it will free ALL your arena tracked pointers. basicly the free function, but iff you pass null to it it frees all the tracked pointers
 void arena_track(void *ptr);//puts pointers into the arena list, dont need to do anythşng if you use BCD memory functions
 void arena_free_all(void);//frees all pointers in arena, dont need to do anything if you just put null into bfree
 
