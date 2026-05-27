@@ -1,8 +1,10 @@
 #include "BCD.h"
 #include <string.h>
 #include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-//randomness
+// randomness
 
 void rng_init(void) {
     static BOOL seeded = FALSE;
@@ -13,11 +15,11 @@ void rng_init(void) {
 }
 
 int random_int(int min, int max) {
-    rng_init(); // fixed seeding thingy
+    rng_init();
     return min + rand() % (max - min + 1);
 }
 
-//memory 
+// memory
 static void **arena_list = NULL;
 static size_t arena_cap = 0;
 static size_t arena_len = 0;
@@ -53,26 +55,44 @@ void *brealloc(void *ptr, size_t size) {
         fprintf(stderr, "brealloc: out of memory\n");
         exit(EXIT_FAILURE);
     }
-    arena_track(new_ptr); //fixed ptr issue
+
+    if (ptr != NULL) {
+        arena_track_realloc(ptr, new_ptr);
+    } else {
+        arena_track(new_ptr);
+    }
+
     return new_ptr;
 }
 
 void bfree(void *ptr) {
-    if (ptr == NULL)
-    {
-        arena_free_all();
-    }
-    
+    if (ptr == NULL) return;
     free(ptr);
 }
 
-void arena_track(void *ptr) { 
+void arena_track(void *ptr) {
     if (arena_len >= arena_cap) {
         arena_cap = arena_cap == 0 ? 32 : arena_cap * 2;
-        arena_list = realloc(arena_list, arena_cap * sizeof(void*)); 
+        arena_list = realloc(arena_list, arena_cap * sizeof(void*));
     }
     arena_list[arena_len++] = ptr;
 }
+
+void arena_track_realloc(void *oldptr, void *newptr) {
+    size_t i = 0;
+
+    while (i < arena_len && arena_list[i] != oldptr) {
+        i++;
+    }
+
+    if (i == arena_len) {
+        fprintf(stderr, "arena_track_realloc: cant find old pointer, this is only for realloc dude!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    arena_list[i] = newptr;
+}
+
 void arena_free_all(void) {
     for (size_t i = 0; i < arena_len; i++) {
         free(arena_list[i]);
@@ -82,8 +102,7 @@ void arena_free_all(void) {
     arena_len = arena_cap = 0;
 }
 
-
-//input output
+// input output
 
 char *ReadStringFromUser(size_t cap) {
     char *buf = balloc(cap);
@@ -103,7 +122,7 @@ char *ReadStringFromUser(size_t cap) {
     return brealloc(buf, len + 1);
 }
 
-//macros and such
+// macros and such
 
 void swap_int(int *a, int *b) {
     int tmp = *a;
